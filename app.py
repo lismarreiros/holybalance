@@ -1,25 +1,17 @@
-from PIL import Image, ImageEnhance, ImageFilter
-import pytesseract
+import easyocr
+import cv2
+from matplotlib import pyplot as plt
 
-# 1. Abrir a imagem
-image = Image.open("images/teste3.jpeg");
+reader = easyocr.Reader(['pt'])
+img = 'images/temp_processed.jpeg'
+results = reader.readtext(img)
 
-# Converter para escala de cinza
-image = image.convert("L");
+img = cv2.imread(img)
 
-#  Aumentar o constrate
-enhancer = ImageEnhance.Contrast(image);
-image = enhancer.enhance(2.0)
+caixa6_texto = results[6][1]
+caixa9_texto = results[9][1]
+caixa12_texto = results[12][1]
 
-# Aplicar filtro de nitidez 
-image = image.filter(ImageFilter.SHARPEN);
+texto_junto = caixa9_texto + ' ' + caixa12_texto
 
-# Salvar imagem tratada
-image.save("images/teste2_processed.jpeg");
-
-# 2. Extrair texto com OCR
-custom_config = r'--oem 1 --psm 6'
-text = pytesseract.image_to_string(image, lang="por", config=custom_config);
-print(text)
-
-# 3. Interpretar dados do texto
+print(caixa6_texto);
